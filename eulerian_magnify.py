@@ -7,7 +7,6 @@ import pylab
 import scipy.signal
 import scipy.fftpack
 
-import cv2.cv as cv
 
 
 def eulerian_magnification(video_filename, image_processing='gaussian', freq_min=0.833, freq_max=1, amplification=50, pyramid_levels=4):
@@ -76,9 +75,9 @@ def load_video(video_filename):
     print "Loading " + video_filename
     # noinspection PyArgumentList
     capture = cv2.VideoCapture(video_filename)
-    frame_count = int(capture.get(cv.CV_CAP_PROP_FRAME_COUNT))
+    frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
     width, height = get_capture_dimensions(capture)
-    fps = int(capture.get(cv.CV_CAP_PROP_FPS))
+    fps = int(capture.get(cv2.CAP_PROP_FPS))
     x = 0
     orig_vid = numpy.zeros((frame_count, height, width, 3), dtype='uint8')
     while True:
@@ -95,7 +94,7 @@ def load_video(video_filename):
 
 def save_video(video, fps, save_filename='media/output.avi'):
     """Save a video to disk"""
-    fourcc = cv.CV_FOURCC('M', 'J', 'P', 'G')
+    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
     writer = cv2.VideoWriter(save_filename, fourcc, fps, (video.shape[2], video.shape[1]), 1)
     for x in range(0, video.shape[0]):
         res = cv2.convertScaleAbs(video[x])
@@ -140,7 +139,7 @@ def laplacian_video(video, shrink_multiple):
 def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_filename='media/output.avi'):
     """Combine a gaussian video representation with the original and save to file"""
     width, height = get_frame_dimensions(orig_video[0])
-    fourcc = cv.CV_FOURCC('M', 'J', 'P', 'G')
+    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
     writer = cv2.VideoWriter(save_filename, fourcc, fps, (width, height), 1)
     for x in range(0, g_video.shape[0]):
         img = numpy.ndarray(shape=g_video[x].shape, dtype='float')
@@ -155,8 +154,8 @@ def combine_pyramid_and_save(g_video, orig_video, enlarge_multiple, fps, save_fi
 
 def get_capture_dimensions(capture):
     """Get the dimensions of a capture"""
-    width = int(capture.get(cv.CV_CAP_PROP_FRAME_WIDTH))
-    height = int(capture.get(cv.CV_CAP_PROP_FRAME_HEIGHT))
+    width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
     return width, height
 
 
